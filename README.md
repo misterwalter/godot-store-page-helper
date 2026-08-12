@@ -70,6 +70,24 @@ warns if anything was actually transparent. Where a store wants a transparent
 background (Steam's library logo, Epic's product logo) it warns if the image came
 out fully opaque.
 
+## Animated GIFs
+
+Any `StoreAsset` can also export an animated `.gif` alongside its `.png` — turn on
+`Gif Enabled` in the inspector and drop an `AnimationPlayer` anywhere underneath the
+asset (see `Screens/Itch/banner` for a working example: it pulses pink and back).
+No other wiring needed; the generator finds the player itself and scrubs it frame by
+frame, so the result is identical every run regardless of machine speed.
+
+The GIF encoder (`gif_encoder.gd`) is entirely self-contained GDScript — octree
+colour quantization plus GIF's own LZW compression, written from the spec. No
+`ffmpeg`, no external binary, nothing to install.
+
+`Gif Max Size Kb` (0 = unlimited) caps the output file size. When set, the encoder
+retries with cheaper settings until it fits or runs out of tiers to try, in order:
+fewer colours, then fewer frames (delay lengthens to keep the loop's total time the
+same), then a smaller canvas. A warning is printed if even the cheapest tier can't
+hit the budget.
+
 ## Screenshotter
 
 [`screenshotter.gd`](screenshotter.gd) is a separate, self-contained node for
@@ -89,6 +107,5 @@ folder afterwards. The process exits non-zero if any asset was skipped or produc
 a warning.
 
 ## TODO
-- GIFs? (Godot has no built-in GIF encoder, so this means a PNG frame sequence plus an external ffmpeg step, or writing an encoder)
 - Fill in GOG's real store capsule sizes once someone with developer portal access can read them off the templates
 - Per-storefront export toggles for partial runs

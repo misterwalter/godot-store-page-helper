@@ -1,11 +1,33 @@
-[gd_scene load_steps=5 format=3 uid="uid://cy2r6hh7rq7os"]
+[gd_scene format=3 uid="uid://cy2r6hh7rq7os"]
 
 [ext_resource type="Script" uid="uid://co5whbavyic2t" path="res://store_asset_generator.gd" id="1_generator"]
-[ext_resource type="Script" path="res://store_front.gd" id="2_front"]
-[ext_resource type="Script" path="res://store_asset.gd" id="3_asset"]
+[ext_resource type="Script" uid="uid://xgmsox0dxtnc" path="res://store_front.gd" id="2_front"]
+[ext_resource type="Script" uid="uid://blg72k14w85do" path="res://store_asset.gd" id="3_asset"]
 [ext_resource type="PackedScene" path="res://placeholder_art.tscn" id="4_placeholder"]
 
-[node name="StoreAssetGenerator" type="Control"]
+[sub_resource type="Animation" id="Animation_banner_gif"]
+resource_name = "gif"
+length = 1.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlaceholderArt:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 0.60392159, 0.85098046, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_banner"]
+_data = {
+"gif": SubResource("Animation_banner_gif")
+}
+
+[node name="StoreAssetGenerator" type="Control" unique_id=150664019]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,7 +36,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_generator")
 
-[node name="Screens" type="Control" parent="."]
+[node name="Screens" type="Control" parent="." unique_id=506451722]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,67 +45,63 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Steam" type="Control" parent="Screens"]
+[node name="Steam" type="Control" parent="Screens" unique_id=2037049524]
 anchors_preset = 0
-offset_left = 0.0
-offset_top = 0.0
 offset_right = 3840.0
 offset_bottom = 4050.0
 mouse_filter = 2
 script = ExtResource("2_front")
 store_id = "steam"
 
-[node name="header_capsule" type="Control" parent="Screens/Steam"]
+[node name="header_capsule" type="Control" parent="Screens/Steam" unique_id=1728238173]
 anchors_preset = 0
-offset_left = 0.0
-offset_top = 0.0
 offset_right = 920.0
 offset_bottom = 430.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "steam/header_capsule"
 
-[node name="PlaceholderArt" parent="Screens/Steam/header_capsule" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Steam/header_capsule" unique_id=617149070 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="small_capsule" type="Control" parent="Screens/Steam"]
+[node name="small_capsule" type="Control" parent="Screens/Steam" unique_id=1939210985]
 anchors_preset = 0
 offset_left = 984.0
-offset_top = 0.0
 offset_right = 1446.0
 offset_bottom = 174.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "steam/small_capsule"
 
-[node name="PlaceholderArt" parent="Screens/Steam/small_capsule" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Steam/small_capsule" unique_id=1034948093 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="main_capsule" type="Control" parent="Screens/Steam"]
+[node name="main_capsule" type="Control" parent="Screens/Steam" unique_id=204143971]
 anchors_preset = 0
 offset_left = 1510.0
-offset_top = 0.0
 offset_right = 2742.0
 offset_bottom = 706.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "steam/main_capsule"
 
-[node name="PlaceholderArt" parent="Screens/Steam/main_capsule" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Steam/main_capsule" unique_id=87310670 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="vertical_capsule" type="Control" parent="Screens/Steam"]
+[node name="vertical_capsule" type="Control" parent="Screens/Steam" unique_id=311846799]
 anchors_preset = 0
 offset_left = 2806.0
-offset_top = 0.0
 offset_right = 3554.0
 offset_bottom = 896.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "steam/vertical_capsule"
 
-[node name="PlaceholderArt" parent="Screens/Steam/vertical_capsule" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Steam/vertical_capsule" unique_id=1340009387 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="page_background" type="Control" parent="Screens/Steam"]
+[node name="page_background" type="Control" parent="Screens/Steam" unique_id=2145822793]
 anchors_preset = 0
-offset_left = 0.0
 offset_top = 994.0
 offset_right = 1438.0
 offset_bottom = 1804.0
@@ -91,9 +109,10 @@ mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "steam/page_background"
 
-[node name="PlaceholderArt" parent="Screens/Steam/page_background" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Steam/page_background" unique_id=832986826 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="library_capsule" type="Control" parent="Screens/Steam"]
+[node name="library_capsule" type="Control" parent="Screens/Steam" unique_id=923628539]
 anchors_preset = 0
 offset_left = 1502.0
 offset_top = 994.0
@@ -103,9 +122,10 @@ mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "steam/library_capsule"
 
-[node name="PlaceholderArt" parent="Screens/Steam/library_capsule" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Steam/library_capsule" unique_id=907902950 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="library_header" type="Control" parent="Screens/Steam"]
+[node name="library_header" type="Control" parent="Screens/Steam" unique_id=2054319772]
 anchors_preset = 0
 offset_left = 2166.0
 offset_top = 994.0
@@ -115,11 +135,11 @@ mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "steam/library_header"
 
-[node name="PlaceholderArt" parent="Screens/Steam/library_header" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Steam/library_header" unique_id=2060958909 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="library_hero" type="Control" parent="Screens/Steam"]
+[node name="library_hero" type="Control" parent="Screens/Steam" unique_id=1911791095]
 anchors_preset = 0
-offset_left = 0.0
 offset_top = 1992.0
 offset_right = 3840.0
 offset_bottom = 3232.0
@@ -127,11 +147,11 @@ mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "steam/library_hero"
 
-[node name="PlaceholderArt" parent="Screens/Steam/library_hero" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Steam/library_hero" unique_id=1193063597 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="library_logo" type="Control" parent="Screens/Steam"]
+[node name="library_logo" type="Control" parent="Screens/Steam" unique_id=84340698]
 anchors_preset = 0
-offset_left = 0.0
 offset_top = 3330.0
 offset_right = 1280.0
 offset_bottom = 4050.0
@@ -139,9 +159,10 @@ mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "steam/library_logo"
 
-[node name="PlaceholderArt" parent="Screens/Steam/library_logo" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Steam/library_logo" unique_id=2019842008 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="community_icon" type="Control" parent="Screens/Steam"]
+[node name="community_icon" type="Control" parent="Screens/Steam" unique_id=288039004]
 anchors_preset = 0
 offset_left = 1344.0
 offset_top = 3330.0
@@ -151,11 +172,11 @@ mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "steam/community_icon"
 
-[node name="PlaceholderArt" parent="Screens/Steam/community_icon" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Steam/community_icon" unique_id=1284455721 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="Itch" type="Control" parent="Screens"]
+[node name="Itch" type="Control" parent="Screens" unique_id=302526669]
 anchors_preset = 0
-offset_left = 0.0
 offset_top = 4250.0
 offset_right = 1654.0
 offset_bottom = 4750.0
@@ -163,33 +184,38 @@ mouse_filter = 2
 script = ExtResource("2_front")
 store_id = "itch"
 
-[node name="cover" type="Control" parent="Screens/Itch"]
+[node name="cover" type="Control" parent="Screens/Itch" unique_id=1433434945]
 anchors_preset = 0
-offset_left = 0.0
-offset_top = 0.0
 offset_right = 630.0
 offset_bottom = 500.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "itch/cover"
 
-[node name="PlaceholderArt" parent="Screens/Itch/cover" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Itch/cover" unique_id=1136963891 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="banner" type="Control" parent="Screens/Itch"]
+[node name="banner" type="Control" parent="Screens/Itch" unique_id=546913079]
 anchors_preset = 0
 offset_left = 694.0
-offset_top = 0.0
 offset_right = 1654.0
 offset_bottom = 400.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "itch/banner"
+gif_enabled = true
+gif_animation_name = "gif"
 
-[node name="PlaceholderArt" parent="Screens/Itch/banner" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Itch/banner" unique_id=123311822 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="Epic" type="Control" parent="Screens"]
+[node name="GifAnimation" type="AnimationPlayer" parent="Screens/Itch/banner" unique_id=1017736420]
+libraries = {
+"": SubResource("AnimationLibrary_banner")
+}
+
+[node name="Epic" type="Control" parent="Screens" unique_id=1924235034]
 anchors_preset = 0
-offset_left = 0.0
 offset_top = 4950.0
 offset_right = 3584.0
 offset_bottom = 9386.0
@@ -197,33 +223,31 @@ mouse_filter = 2
 script = ExtResource("2_front")
 store_id = "epic"
 
-[node name="product_logo" type="Control" parent="Screens/Epic"]
+[node name="product_logo" type="Control" parent="Screens/Epic" unique_id=824187977]
 anchors_preset = 0
-offset_left = 0.0
-offset_top = 0.0
 offset_right = 960.0
 offset_bottom = 540.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "epic/product_logo"
 
-[node name="PlaceholderArt" parent="Screens/Epic/product_logo" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Epic/product_logo" unique_id=2031987086 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="offer_landscape" type="Control" parent="Screens/Epic"]
+[node name="offer_landscape" type="Control" parent="Screens/Epic" unique_id=938379490]
 anchors_preset = 0
 offset_left = 1024.0
-offset_top = 0.0
 offset_right = 3584.0
 offset_bottom = 1440.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "epic/offer_landscape"
 
-[node name="PlaceholderArt" parent="Screens/Epic/offer_landscape" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Epic/offer_landscape" unique_id=1211064293 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="offer_portrait" type="Control" parent="Screens/Epic"]
+[node name="offer_portrait" type="Control" parent="Screens/Epic" unique_id=809889264]
 anchors_preset = 0
-offset_left = 0.0
 offset_top = 1538.0
 offset_right = 1200.0
 offset_bottom = 3138.0
@@ -231,9 +255,10 @@ mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "epic/offer_portrait"
 
-[node name="PlaceholderArt" parent="Screens/Epic/offer_portrait" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Epic/offer_portrait" unique_id=151942362 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="media_carousel_image" type="Control" parent="Screens/Epic"]
+[node name="media_carousel_image" type="Control" parent="Screens/Epic" unique_id=973941232]
 anchors_preset = 0
 offset_left = 1264.0
 offset_top = 1538.0
@@ -243,11 +268,11 @@ mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "epic/media_carousel_image"
 
-[node name="PlaceholderArt" parent="Screens/Epic/media_carousel_image" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Epic/media_carousel_image" unique_id=877233001 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="social_preview" type="Control" parent="Screens/Epic"]
+[node name="social_preview" type="Control" parent="Screens/Epic" unique_id=2169320]
 anchors_preset = 0
-offset_left = 0.0
 offset_top = 3236.0
 offset_right = 1200.0
 offset_bottom = 4436.0
@@ -255,11 +280,11 @@ mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "epic/social_preview"
 
-[node name="PlaceholderArt" parent="Screens/Epic/social_preview" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Epic/social_preview" unique_id=54184573 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="Gog" type="Control" parent="Screens"]
+[node name="Gog" type="Control" parent="Screens" unique_id=1885114384]
 anchors_preset = 0
-offset_left = 0.0
 offset_top = 9586.0
 offset_right = 4166.0
 offset_bottom = 10666.0
@@ -267,57 +292,55 @@ mouse_filter = 2
 script = ExtResource("2_front")
 store_id = "gog"
 
-[node name="key_art" type="Control" parent="Screens/Gog"]
+[node name="key_art" type="Control" parent="Screens/Gog" unique_id=414151266]
 anchors_preset = 0
-offset_left = 0.0
-offset_top = 0.0
 offset_right = 1920.0
 offset_bottom = 1080.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "gog/key_art"
 
-[node name="PlaceholderArt" parent="Screens/Gog/key_art" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Gog/key_art" unique_id=1640869344 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="galaxy_tile" type="Control" parent="Screens/Gog"]
+[node name="galaxy_tile" type="Control" parent="Screens/Gog" unique_id=1826474865]
 anchors_preset = 0
 offset_left = 1984.0
-offset_top = 0.0
 offset_right = 2326.0
 offset_bottom = 482.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "gog/galaxy_tile"
 
-[node name="PlaceholderArt" parent="Screens/Gog/galaxy_tile" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Gog/galaxy_tile" unique_id=299229464 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="galaxy_background" type="Control" parent="Screens/Gog"]
+[node name="galaxy_background" type="Control" parent="Screens/Gog" unique_id=248899762]
 anchors_preset = 0
 offset_left = 2390.0
-offset_top = 0.0
 offset_right = 3990.0
 offset_bottom = 670.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "gog/galaxy_background"
 
-[node name="PlaceholderArt" parent="Screens/Gog/galaxy_background" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Gog/galaxy_background" unique_id=1563683565 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="galaxy_icon" type="Control" parent="Screens/Gog"]
+[node name="galaxy_icon" type="Control" parent="Screens/Gog" unique_id=825909102]
 anchors_preset = 0
 offset_left = 4054.0
-offset_top = 0.0
 offset_right = 4166.0
 offset_bottom = 112.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "gog/galaxy_icon"
 
-[node name="PlaceholderArt" parent="Screens/Gog/galaxy_icon" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/Gog/galaxy_icon" unique_id=1014989415 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="GooglePlay" type="Control" parent="Screens"]
+[node name="GooglePlay" type="Control" parent="Screens" unique_id=902321300]
 anchors_preset = 0
-offset_left = 0.0
 offset_top = 10866.0
 offset_right = 2744.0
 offset_bottom = 12786.0
@@ -325,45 +348,43 @@ mouse_filter = 2
 script = ExtResource("2_front")
 store_id = "google_play"
 
-[node name="app_icon" type="Control" parent="Screens/GooglePlay"]
+[node name="app_icon" type="Control" parent="Screens/GooglePlay" unique_id=740064711]
 anchors_preset = 0
-offset_left = 0.0
-offset_top = 0.0
 offset_right = 512.0
 offset_bottom = 512.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "google_play/app_icon"
 
-[node name="PlaceholderArt" parent="Screens/GooglePlay/app_icon" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/GooglePlay/app_icon" unique_id=862762814 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="feature_graphic" type="Control" parent="Screens/GooglePlay"]
+[node name="feature_graphic" type="Control" parent="Screens/GooglePlay" unique_id=1833117588]
 anchors_preset = 0
 offset_left = 576.0
-offset_top = 0.0
 offset_right = 1600.0
 offset_bottom = 500.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "google_play/feature_graphic"
 
-[node name="PlaceholderArt" parent="Screens/GooglePlay/feature_graphic" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/GooglePlay/feature_graphic" unique_id=1761073400 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="phone_screenshot_portrait" type="Control" parent="Screens/GooglePlay"]
+[node name="phone_screenshot_portrait" type="Control" parent="Screens/GooglePlay" unique_id=300304738]
 anchors_preset = 0
 offset_left = 1664.0
-offset_top = 0.0
 offset_right = 2744.0
 offset_bottom = 1920.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "google_play/phone_screenshot_portrait"
 
-[node name="PlaceholderArt" parent="Screens/GooglePlay/phone_screenshot_portrait" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/GooglePlay/phone_screenshot_portrait" unique_id=1993005552 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="AppStore" type="Control" parent="Screens"]
+[node name="AppStore" type="Control" parent="Screens" unique_id=186255733]
 anchors_preset = 0
-offset_left = 0.0
 offset_top = 12986.0
 offset_right = 2408.0
 offset_bottom = 18704.0
@@ -371,33 +392,31 @@ mouse_filter = 2
 script = ExtResource("2_front")
 store_id = "app_store"
 
-[node name="app_icon" type="Control" parent="Screens/AppStore"]
+[node name="app_icon" type="Control" parent="Screens/AppStore" unique_id=739578331]
 anchors_preset = 0
-offset_left = 0.0
-offset_top = 0.0
 offset_right = 1024.0
 offset_bottom = 1024.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "app_store/app_icon"
 
-[node name="PlaceholderArt" parent="Screens/AppStore/app_icon" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/AppStore/app_icon" unique_id=807678516 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="iphone_6_9_portrait" type="Control" parent="Screens/AppStore"]
+[node name="iphone_6_9_portrait" type="Control" parent="Screens/AppStore" unique_id=607565154]
 anchors_preset = 0
 offset_left = 1088.0
-offset_top = 0.0
 offset_right = 2408.0
 offset_bottom = 2868.0
 mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "app_store/iphone_6_9_portrait"
 
-[node name="PlaceholderArt" parent="Screens/AppStore/iphone_6_9_portrait" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/AppStore/iphone_6_9_portrait" unique_id=1369641755 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="ipad_13_portrait" type="Control" parent="Screens/AppStore"]
+[node name="ipad_13_portrait" type="Control" parent="Screens/AppStore" unique_id=239844296]
 anchors_preset = 0
-offset_left = 0.0
 offset_top = 2966.0
 offset_right = 2064.0
 offset_bottom = 5718.0
@@ -405,9 +424,10 @@ mouse_filter = 2
 script = ExtResource("3_asset")
 preset_id = "app_store/ipad_13_portrait"
 
-[node name="PlaceholderArt" parent="Screens/AppStore/ipad_13_portrait" instance=ExtResource("4_placeholder")]
+[node name="PlaceholderArt" parent="Screens/AppStore/ipad_13_portrait" unique_id=720682969 instance=ExtResource("4_placeholder")]
+layout_mode = 1
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=1150422415]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -416,20 +436,19 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1115942090]
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(920, 430)
 render_target_update_mode = 4
 
-[node name="HowToUse" type="Label" parent="."]
+[node name="HowToUse" type="Label" parent="." unique_id=2129672106]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 text = "How to use:
 
 Put your artwork inside each asset node under Screens (one folder of nodes per storefront).

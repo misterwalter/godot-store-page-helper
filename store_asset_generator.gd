@@ -13,6 +13,11 @@ extends Control
 ## storefront you don't ship to and it stops being generated; add one and it
 ## starts. Sizes come from [StorePresets].
 ##
+## A [StoreAsset] with [member StoreAsset.gif_enabled] on also gets an
+## animated .gif alongside its .png, scrubbed frame by frame from its
+## [AnimationPlayer] via [GifEncoder] — a self-contained encoder with no
+## external dependency.
+##
 ## Run with [code]-- --no-open[/code] to skip opening the output folder at the end.
 
 const OUTPUT_ROOT := "res://store_assets/"
@@ -158,30 +163,113 @@ func _render_job(job: Dictionary) -> void:
 	asset.show()
 
 	# Assets are laid out side by side in the editor, so shift the whole tree to
-	# bring this one to the viewport origin, then put it back.
+	# bring this one to the viewport origin, then put it back once every capture
+	# for this asset (the still PNG, and any GIF frames) is done.
 	var saved_position := screens_root.position
 	screens_root.position -= asset.global_position
 	sub_viewport.size = pixels
 
-	await get_tree().process_frame
-	await RenderingServer.frame_post_draw
+	var image := await _capture_frame()
+	if image == null:
+		_warn("%s/%s produced no image." % [job["folder"], job["file_name"]])
+	else:
+		if image.get_size() != pixels:
+			_warn("%s/%s rendered at %dx%d instead of %dx%d." % [
+				job["folder"], job["file_name"],
+				image.get_width(), image.get_height(), pixels.x, pixels.y,
+			])
+		_apply_alpha_requirement(image, job)
+		_save(image, job)
 
-	var image := sub_viewport.get_texture().get_image()
+	if asset is StoreAsset and (asset as StoreAsset).gif_enabled:
+		await _render_gif_job(asset as StoreAsset, job)
+
 	screens_root.position = saved_position
 	asset.hide()
 	storefront.hide()
 
-	if image == null:
-		_warn("%s/%s produced no image." % [job["folder"], job["file_name"]])
-		return
-	if image.get_size() != pixels:
-		_warn("%s/%s rendered at %dx%d instead of %dx%d." % [
-			job["folder"], job["file_name"],
-			image.get_width(), image.get_height(), pixels.x, pixels.y,
-		])
 
-	_apply_alpha_requirement(image, job)
-	_save(image, job)
+func _capture_frame() -> Image:
+	await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	return sub_viewport.get_texture().get_image()
+
+
+## Scrubs [param asset]'s animation frame by frame (never played in real
+## time) and hands the captures to [GifEncoder]. Assumes the caller has
+## already positioned/sized the viewport for this asset, as [method _render_job] does.
+func _render_gif_job(asset: StoreAsset, job: Dictionary) -> void:
+	var label := "%s/%s" % [job["folder"], job["file_name"]]
+
+	if not asset.has_gif_animation():
+		_warn("%s: GIF export is on but has no usable animation, skipping the .gif." % label)
+		return
+
+	var player := asset.find_gif_animation_player()
+	var anim_name := asset.resolved_gif_animation_name()
+	var animation := player.get_animation(anim_name)
+	var fps := asset.gif_fps
+	var frame_count := maxi(2, roundi(animation.length * fps))
+	var delay_cs := maxi(2, roundi(100.0 / fps))
+
+	# seek()'s "update" flag only actually applies track values once the
+	# player has been played at least once — so play() once to activate it,
+	# then freeze real-time playback dead so every frame below is positioned
+	# purely by our own explicit seek() calls, not by wall-clock time.
+	var original_speed := player.speed_scale
+	player.play(anim_name)
+	player.speed_scale = 0.0
+
+	var frames: Array[Image] = []
+	for i in range(frame_count):
+		var t := clampf(float(i) / fps, 0.0, animation.length)
+		player.seek(t, true)
+		var frame := await _capture_frame()
+		if frame != null:
+			frames.append(frame)
+
+	player.seek(0.0, true)
+	player.stop()
+	player.speed_scale = original_speed
+
+	if frames.size() < 2:
+		_warn("%s: captured fewer than 2 usable frames, skipping the .gif." % label)
+		return
+
+	if job["alpha"] == StorePresets.ALPHA_NONE:
+		for frame in frames:
+			frame.convert(Image.FORMAT_RGB8)
+			frame.convert(Image.FORMAT_RGBA8)
+
+	var options := {
+		"max_colors": asset.gif_max_colors,
+		"loop": asset.gif_loop,
+		"max_size_bytes": asset.gif_max_size_kb * 1024,
+	}
+	var result := GifEncoder.encode_within_budget(frames, delay_cs, options)
+	if not result.get("ok", false):
+		_warn("%s: %s" % [label, result.get("error", "GIF encoding failed.")])
+		return
+
+	var directory := OUTPUT_ROOT.path_join(String(job["folder"]))
+	if DirAccess.make_dir_recursive_absolute(directory) != OK:
+		_warn("%s: could not create %s." % [label, directory])
+		return
+	var path := directory.path_join("%s.gif" % job["file_name"])
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		_warn("%s: could not write %s (%s)." % [label, path, error_string(FileAccess.get_open_error())])
+		return
+	file.store_buffer(result["bytes"])
+	file.close()
+
+	_written += 1
+	var kb: float = result["bytes"].size() / 1024.0
+	print("  %s  %d frames @ %dfps, %d colors, %.1fKB" % [path, result["frame_count"], fps, result["colors"], kb])
+	if not result["under_budget"]:
+		_warn("%s.gif is %.1fKB, over the %dKB budget even at the lowest quality tier tried." % [
+			job["file_name"], kb, asset.gif_max_size_kb,
+		])
 
 
 ## Enforces the store's transparency rule, warning when the artwork disagrees

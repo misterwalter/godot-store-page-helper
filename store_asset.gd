@@ -39,6 +39,33 @@ var preset_id: String = StorePresets.CUSTOM_ID
 		file_name = value
 		update_configuration_warnings()
 
+@export_group("Animated GIF", "gif_")
+## Also writes an animated .gif alongside the .png, scrubbed frame by frame
+## from an [AnimationPlayer] found anywhere under this node — no wiring
+## needed, just drop one in.
+@export var gif_enabled := false:
+	set(value):
+		gif_enabled = value
+		update_configuration_warnings()
+
+## Which animation to sample. Blank uses the player's autoplay animation, or
+## its first animation if it has no autoplay set.
+@export var gif_animation_name := "":
+	set(value):
+		gif_animation_name = value
+		update_configuration_warnings()
+
+@export_range(2, 30, 1, "suffix:fps") var gif_fps := 12
+
+@export_range(2, 256, 1) var gif_max_colors := 256
+
+## 0 = no limit. When set, quality is given up in this order: colours first,
+## then dropped frames, then a smaller canvas — until the file fits or there
+## is nothing cheaper left to try.
+@export_range(0, 2000, 1, "or_greater", "suffix:KB") var gif_max_size_kb := 0
+
+@export var gif_loop := true
+
 @export_group("Editor Preview")
 ## Draws the labelled outline that marks out this asset's rectangle. Editor
 ## only — it is never part of the exported image.
@@ -95,6 +122,42 @@ func output_name() -> String:
 	if not asset_id.is_empty() and StorePresets.has_preset(preset_id):
 		return asset_id
 	return StorePresets.slugify(String(name))
+
+
+## The first [AnimationPlayer] found anywhere under this node, or null.
+func find_gif_animation_player() -> AnimationPlayer:
+	var found := find_children("*", "AnimationPlayer", true, false)
+	return found[0] if not found.is_empty() else null
+
+
+## The animation actually sampled for GIF export: [member gif_animation_name]
+## if it names a real animation, else the player's autoplay animation, else
+## its first animation. "" if none of those exist.
+func resolved_gif_animation_name() -> String:
+	var player := find_gif_animation_player()
+	if player == null:
+		return ""
+	if not gif_animation_name.is_empty() and player.has_animation(gif_animation_name):
+		return gif_animation_name
+	if not player.autoplay.is_empty() and player.has_animation(player.autoplay):
+		return player.autoplay
+	var names := player.get_animation_list()
+	return names[0] if not names.is_empty() else ""
+
+
+## True once every piece needed to actually render a GIF is in place: enabled,
+## a player, a resolvable animation, and a positive length to sample across.
+func has_gif_animation() -> bool:
+	if not gif_enabled:
+		return false
+	var player := find_gif_animation_player()
+	if player == null:
+		return false
+	var anim_name := resolved_gif_animation_name()
+	if anim_name.is_empty():
+		return false
+	var animation := player.get_animation(anim_name)
+	return animation != null and animation.length > 0.0
 
 
 func set_preset_id(value: String) -> void:
@@ -226,6 +289,15 @@ func _get_configuration_warnings() -> PackedStringArray:
 	if not file_name.is_empty() and StorePresets.slugify(file_name) != file_name:
 		warnings.append("File name will be written as \"%s\"." % StorePresets.slugify(file_name))
 
+	if gif_enabled:
+		var gif_player := find_gif_animation_player()
+		if gif_player == null:
+			warnings.append("GIF export is on but there is no AnimationPlayer under this node, so no .gif will be written.")
+		elif resolved_gif_animation_name().is_empty():
+			warnings.append("%s has no animations to sample, so no .gif will be written." % gif_player.name)
+		elif not has_gif_animation():
+			warnings.append("\"%s\" has zero length, so no .gif will be written." % resolved_gif_animation_name())
+
 	return warnings
 
 #endregion
@@ -273,6 +345,8 @@ func _outline_label() -> String:
 		label += "  (transparent)"
 	elif alpha_requirement() == StorePresets.ALPHA_NONE:
 		label += "  (opaque)"
+	if has_gif_animation():
+		label += "  +gif"
 	return label
 
 #endregion
