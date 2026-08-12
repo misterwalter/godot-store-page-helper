@@ -1,11 +1,11 @@
 A tool for generating store assets for a steam store page, also works for itch, GOG, the Epic Games Store, Google Play and the App Store.
 
-Originally forked from https://github.com/Miziziziz/SteamStoreAssetsCreator with appreciation! I just wanted to tweak some things and it seemed right to keep my version public since I benefited from his.
+Originally forked from https://github.com/Miziziziz/SteamStoreAssetsCreator with appreciation! I just wanted to tweak some things and it seemed right to keep my version public since I benefited from his version and I barely did anything here anyway.
 
 ### How to use:
-* Put your artwork inside each asset node under `Screens` — one folder of nodes per storefront
-* Delete any storefront you aren't shipping to
-* Run the scene
+* Put your artwork inside each asset node under `Screens`, filling in whichever images are important to you.
+* Delete any storefront you aren't shipping to or just ignore those outputs.
+* Run the scene. It will twitch around a lot and then close itself when done.
 
 Every image lands in `store_assets/<storefront>/<asset>.png`.
 
@@ -92,5 +92,3 @@ a warning.
 - GIFs? (Godot has no built-in GIF encoder, so this means a PNG frame sequence plus an external ffmpeg step, or writing an encoder)
 - Fill in GOG's real store capsule sizes once someone with developer portal access can read them off the templates
 - Per-storefront export toggles for partial runs
-
-https://github.com/user-attachments/assets/0ce44ebb-e61f-493f-a5c7-a12ff15fd9c9
